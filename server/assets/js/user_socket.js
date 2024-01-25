@@ -6,7 +6,7 @@ import {Socket} from "phoenix"
 
 // And connect to the path in "lib/server_web/endpoint.ex". We pass the
 // token for authentication. Read below how it should be used.
-let socket = new Socket("/socket", {params: {token: window.userToken}})
+let socket = new Socket("/tictactoe", {params: {token: window.userToken}})
 
 // When you connect, you'll often need to authenticate the client.
 // For example, imagine you have an authentication plug, `MyAuth`,
@@ -58,7 +58,21 @@ socket.connect()
 // subtopic is its id - in this case 42:
 let channel = socket.channel("room:42", {})
 channel.join()
-  .receive("ok", resp => { console.log("Joined successfully", resp) })
+  .receive("ok", async resp => { 
+    channel.push("play", {"i" : 0, "j" : 0, "c" : "o"}) 
+    await new Promise(r => setTimeout(r, 1000));
+    channel.push("play", {"i" : 0, "j" : 1, "c" : "o"}) 
+    await new Promise(r => setTimeout(r, 1000));
+    channel.push("play", {"i" : 4, "j" : 1, "c" : "x"}) 
+    await new Promise(r => setTimeout(r, 1000));
+    channel.push("play", {"i" : 0, "j" : 0, "c" : "x"}) 
+    await new Promise(r => setTimeout(r, 1000));
+    channel.push("play", {"i" : 1, "j" : 1, "c" : "x"}) 
+  })
   .receive("error", resp => { console.log("Unable to join", resp) })
+
+channel.on("update", payload => {
+  console.log(payload)
+})
 
 export default socket

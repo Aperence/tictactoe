@@ -14,7 +14,7 @@ class Tile(Enum):
 class TicTacToeNetwork():
     def __init__(self, game, room_id):
         self.tictactoe = game
-        self.socket = channel_client.connect_socket("ws://localhost:4000/socket/websocket?vsn=2.0.0")
+        self.socket = channel_client.connect_socket("ws://localhost:4000/tictactoe/websocket?vsn=2.0.0")
         self.lobby = F"room:{room_id}"
         channel_client.join_lobby(self.socket, self.lobby)
         
