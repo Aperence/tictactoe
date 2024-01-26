@@ -25,8 +25,8 @@ defmodule Tictactoe do
   end
 
   def winner(positions) do
-    lst_x = Map.get(positions, :x, [])
-    lst_o = Map.get(positions, :o, [])
+    lst_x = Map.get(positions, :x, MapSet.new([]))
+    lst_o = Map.get(positions, :o, MapSet.new([]))
     cond do
       Enum.any?(lst_x, fn pos -> win_pos(lst_x, pos) end) -> :x
       Enum.any?(lst_o, fn pos -> win_pos(lst_o, pos) end) -> :o
@@ -35,14 +35,14 @@ defmodule Tictactoe do
   end
 
   def play(t = %Tictactoe{positions: positions, player: player, winner: win}, i, j, c) when i >= 0 and i < @size and j >= 0 and j < @size and c == player and win == :none do
-    if Map.get(positions, :x, []) |> Enum.member?({i, j}) or Map.get(positions, :o, []) |> Enum.member?({i, j}) do
+    if Map.get(positions, :x, MapSet.new([])) |> Enum.member?({i, j}) or Map.get(positions, :o, MapSet.new([])) |> Enum.member?({i, j}) do
       t
     else
       other = case player do
         :x -> :o
         :o -> :x
       end
-      updated_position = Map.update(positions, c, [{i, j}], fn value -> [{i, j}] ++ value end)
+      updated_position = Map.update(positions, c, MapSet.new([{i, j}]), fn value -> MapSet.put(value, {i, j}) end)
       %Tictactoe{positions: updated_position, player: other, winner: winner(updated_position)}
     end
   end
@@ -52,8 +52,8 @@ defmodule Tictactoe do
   end
 
   def json(%Tictactoe{positions: positions, player: player, winner: win}) do
-    lst_x = Map.get(positions, :x, [])
-    lst_o = Map.get(positions, :o, [])
+    lst_x = Map.get(positions, :x, MapSet.new([]))
+    lst_o = Map.get(positions, :o, MapSet.new([]))
     %{
       winner: win,
       player: player,

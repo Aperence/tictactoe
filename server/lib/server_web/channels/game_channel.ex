@@ -4,6 +4,7 @@ defmodule ServerWeb.GameChannel do
   @impl true
   def join("room:" <> roomID, payload, socket) do
     if authorized?(payload) do
+      send(self(), {:update, roomID})
       {:ok, socket}
     else
       {:error, %{reason: "unauthorized"}}
@@ -13,7 +14,7 @@ defmodule ServerWeb.GameChannel do
   # It is also common to receive messages from the client and
   # broadcast to everyone in the current topic (game:lobby).
   @impl true
-  def handle_in("play", payload = %{"i" => i, "j" => j, "c" => c}, socket) do
+  def handle_in("play", %{"i" => i, "j" => j, "c" => c}, socket) do
     topic = socket.topic
     ["room", roomID] = String.split(topic, ":")
 
@@ -26,8 +27,14 @@ defmodule ServerWeb.GameChannel do
   end
 
   @impl true
-  def handle_in("play", payload, socket) do
+  def handle_in("play", _payload, socket) do
     {:reply, :ok, socket}
+  end
+
+  def handle_info({:update, roomID}, socket) do
+    game = Games.get_game(roomID)
+    broadcast(socket, "update", Tictactoe.json(game))
+    {:noreply, socket}
   end
 
   # Add authorization logic here as required.

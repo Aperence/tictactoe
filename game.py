@@ -6,6 +6,7 @@ from tictactoe import TicTacToe, Tile
 parser = argparse.ArgumentParser()
 
 parser.add_argument("player", type=str)
+parser.add_argument("room_id", type=int)
 
 args = parser.parse_args()
 
@@ -31,7 +32,7 @@ def main():
         tile = Tile.X
     if args.player == "O":
         tile = Tile.O
-    state = TicTacToe(tile, WINDOW_WIDTH, WINDOW_HEIGHT)
+    state = TicTacToe(tile, WINDOW_WIDTH, WINDOW_HEIGHT, args.room_id)
 
     # The main game loop
     while looping:
