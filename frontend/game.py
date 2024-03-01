@@ -1,4 +1,5 @@
-import pygame, sys, random
+import pygame
+import sys
 from pygame.locals import *
 import argparse
 from tictactoe import TicTacToe, Tile
@@ -55,6 +56,6 @@ def main():
         state.display(WINDOW)
         pygame.display.update()
         fpsClock.tick(FPS)
-    
-        
+
+
 main()

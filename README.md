@@ -1,6 +1,8 @@
-Example of application using channels for game networks
+Example of application using channels/websockets for game backend 
 ```
 cd server && mix phx.server
+
+cd frontend
 
 # first player with X, in room 42
 python3 game.py X 42
