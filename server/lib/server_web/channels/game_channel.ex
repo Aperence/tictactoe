@@ -31,6 +31,7 @@ defmodule ServerWeb.GameChannel do
     {:reply, :ok, socket}
   end
 
+  @impl true
   def handle_info({:update, roomID}, socket) do
     game = Games.get_game(roomID)
     broadcast(socket, "update", Tictactoe.json(game))
